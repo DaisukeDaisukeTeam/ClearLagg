@@ -5,7 +5,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 
-class ClearLaggCommand extends Command implements PluginIdentifiableCommand{
+class ClearLaggCommand extends Command{
     public $api;
     public function __construct(Loader $plugin){
         parent::__construct("clearlagg", "Clear the lag!", "/clearlagg help", ["lagg"]);

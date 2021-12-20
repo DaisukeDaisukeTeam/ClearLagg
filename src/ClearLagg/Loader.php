@@ -1,19 +1,19 @@
 <?php
 namespace clearlagg;
 
-use pocketmine\entity\DroppedItem;
 use pocketmine\entity\Entity;
-use pocketmine\entity\Creature;
 use pocketmine\entity\Human;
+use pocketmine\entity\Living;
+use pocketmine\entity\object\ItemEntity;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
 class Loader extends PluginBase{
     protected $exemptedEntities = [];
 
-    public function onEnable(){
+    public function onEnable(): void{
         $this->getServer()->getCommandMap()->register("clearlagg", new ClearLaggCommand($this));
-        $this->getLogger()->info(TextFormat::YELLOW . "Enabling...");
+        //$this->getLogger()->info(TextFormat::YELLOW . "Enabling...");
     }
 
     /**
@@ -21,9 +21,9 @@ class Loader extends PluginBase{
      */
     public function removeEntities(){
         $i = 0;
-        foreach($this->getServer()->getLevels() as $level){
+        foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
             foreach($level->getEntities() as $entity){
-                if(!$this->isEntityExempted($entity) && !($entity instanceof Creature)){
+                if(!$this->isEntityExempted($entity) && !($entity instanceof Living)){
                     $entity->close();
                     $i++;
                 }
@@ -37,9 +37,9 @@ class Loader extends PluginBase{
      */
     public function removeMobs(){
         $i = 0;
-        foreach($this->getServer()->getLevels() as $level){
+        foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
             foreach($level->getEntities() as $entity){
-                if(!$this->isEntityExempted($entity) && $entity instanceof Creature && !($entity instanceof Human)){
+                if(!$this->isEntityExempted($entity) && $entity instanceof Living && !($entity instanceof Human)){
                     $entity->close();
                     $i++;
                 }
@@ -53,9 +53,9 @@ class Loader extends PluginBase{
      */
     public function removeDroppedItems(){
         $i = 0;
-        foreach($this->getServer()->getLevels() as $level){
+        foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
             foreach($level->getEntities() as $entity){
-                if(!$this->isEntityExempted($entity) && ($entity instanceof DroppedItem)){
+                if(!$this->isEntityExempted($entity) && ($entity instanceof ItemEntity)){
                     $entity->close();
                     $i++;
                 }
@@ -69,12 +69,12 @@ class Loader extends PluginBase{
      */
     public function getEntityCount(){
         $ret = [0, 0, 0];
-        foreach($this->getServer()->getLevels() as $level){
+        foreach($this->getServer()->getWorldManager()->getWorlds() as $level){
             foreach($level->getEntities() as $entity){
                 if($entity instanceof Human){
                     $ret[0]++;
                 }
-                elseif($entity instanceof Creature){
+                elseif($entity instanceof Living){
                     $ret[1]++;
                 }
                 else{
